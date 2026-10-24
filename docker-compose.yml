@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: buywise
+      POSTGRES_PASSWORD: buywise
+      POSTGRES_DB: buywise
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U buywise"]
+      interval: 5s
+      retries: 10
+  backend:
+    build: ./backend
+    env_file: ./backend/.env
+    environment:
+      DATABASE_URL: postgresql+psycopg://buywise:buywise@db:5432/buywise
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+    ports: ["8765:8000"]
+    depends_on:
+      db: { condition: service_healthy }
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8765
+    ports: ["5173:80"]
+    depends_on: [backend]
+volumes:
+  pgdata:
