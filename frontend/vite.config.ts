@@ -11,4 +11,5 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
   },
+  base: process.env.VITE_BASE_PATH || "/BuyWise"
 });
