@@ -50,7 +50,7 @@ export function HomePage() {
   const home = useQuery({ queryKey: ["home"], queryFn: ({ signal }) => api.home(signal) });
   const providers = useQuery({ queryKey: ["providers"], queryFn: ({ signal }) => api.providers(signal) });
   const recent = getRecentSearches().slice(0, 6);
-  const noneConfigured = providers.data && !providers.data.providers.some((p) => p.configured);
+  const noneConfigured = !!providers.data?.providers && !providers.data.providers.some((p) => p.configured);
 
   return (
     <div className="space-y-10">
